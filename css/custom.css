@@ -1,0 +1,4 @@
+.custom-style-load-area{}
+.custom-style-load-area ul{position: absolute; top: 20px; right: 20px;}
+.custom-style-load-area ul li{float: left; list-style-type: none;}
+.custom-style-load-area ul li a:active{font-weight: bold;}
