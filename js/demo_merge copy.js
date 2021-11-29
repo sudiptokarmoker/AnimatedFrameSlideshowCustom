@@ -8,8 +8,8 @@
  * Copyright 2017, Codrops
  * http://www.codrops.com
  */
- {
-    var globalStyleValue = 1;
+{
+    var globalStyleValue = 2;
     // From https://davidwalsh.name/javascript-debounce-function.
 	function debounce(func, wait, immediate) {
 		var timeout;
@@ -38,14 +38,22 @@
                     },
                     shape: {
                         duration: 300,
-                        easing: {in: globalStyleValue === 1 ? 'easeOutQuint' : 'easeOutQuad', out: 'easeOutQuad'}
+                        easing: {in: globalStyleValue == 1 ? 'easeOutQuint' : 'easeOutQuad', out: 'easeOutQuad'}
                     }
                 },
-                frameFill: globalStyleValue === 1 ? '#f1f1f1' : '#111'
+                //frameFill: '#f1f1f1'
+                frameFill: '#f1f1f1'
             }
+            // default loadded style
+            //this.currentStyleLoaded = styleLoaddedInstance !== undefined ? 1 : styleLoaddedInstance;
+            this.currentStyleLoaded = globalStyleValue;
+            /**
+             * end of default loadded style
+             */
             this.init();
         }
         init() {
+            console.log("init again");
             this.DOM.slides = Array.from(this.DOM.el.querySelectorAll('.slides > .slide'));
             this.slidesTotal = this.DOM.slides.length;
             this.DOM.nav = this.DOM.el.querySelector('.slidenav');
@@ -78,11 +86,13 @@
             this.DOM.shape.setAttribute('d', this.isAnimating ? this.paths.final : this.paths.initial);
         }
         calculatePath(path = 'initial') {
-            if(globalStyleValue === 1){
+            if(this.currentStyleLoaded === 1){
+                console.log("loadded calculatate path : 1");
                 return path === 'initial' ?
-                    `M 0,0 0,${this.rect.height} ${this.rect.width},${this.rect.height} ${this.rect.width},0 0,0 Z M 0,0 ${this.rect.width},0 ${this.rect.width},${this.rect.height} 0,${this.rect.height} Z` :
-                    `M 0,0 0,${this.rect.height} ${this.rect.width},${this.rect.height} ${this.rect.width},0 0,0 Z M ${this.frameSize},${this.frameSize} ${this.rect.width-this.frameSize},${this.frameSize} ${this.rect.width-this.frameSize},${this.rect.height-this.frameSize} ${this.frameSize},${this.rect.height-this.frameSize} Z`;
-            } else{
+                `M 0,0 0,${this.rect.height} ${this.rect.width},${this.rect.height} ${this.rect.width},0 0,0 Z M 0,0 ${this.rect.width},0 ${this.rect.width},${this.rect.height} 0,${this.rect.height} Z` :
+                `M 0,0 0,${this.rect.height} ${this.rect.width},${this.rect.height} ${this.rect.width},0 0,0 Z M ${this.frameSize},${this.frameSize} ${this.rect.width-this.frameSize},${this.frameSize} ${this.rect.width-this.frameSize},${this.rect.height-this.frameSize} ${this.frameSize},${this.rect.height-this.frameSize} Z`;
+            } else {
+                console.log("loadded calculatate path : 2");
                 if ( path === 'initial' ) {
                     return `M 0,0 0,${this.rect.height} ${this.rect.width},${this.rect.height} ${this.rect.width},0 0,0 Z M 0,0 ${this.rect.width},0 ${this.rect.width},${this.rect.height} 0,${this.rect.height} Z`;
                 }
@@ -116,52 +126,52 @@
         navigate(dir = 'next') {
             if ( this.isAnimating ) return false;
             this.isAnimating = true;
-            let animateShapeData;
-            if(globalStyleValue === 1){
-                animateShapeData = {
-                    targets: this.DOM.shape,
-                    duration: this.settings.animation.shape.duration,
-                    easing: this.settings.animation.shape.easing.in,
-                    d: this.paths.final
-                }
-            } else {
-                animateShapeData = {
-                    targets: this.DOM.shape,
-                    duration: this.settings.animation.shape.duration,
-                    easing: this.settings.animation.shape.easing.in,
-                    d: dir === 'next' ? this.paths.final.next : this.paths.final.prev
-                }
-            }
-            const animateShapeIn = anime(animateShapeData);
+
+            const animateShapeIn = anime({
+                targets: this.DOM.shape,
+                duration: this.settings.animation.shape.duration,
+                easing: this.settings.animation.shape.easing.in,
+                d: this.paths.final
+            });
 
             const animateSlides = () => {
-                if(globalStyleValue === 1){
-                    return new Promise((resolve, reject) => {
-                        const currentSlide = this.DOM.slides[this.current];
-                        anime({
-                            targets: currentSlide,
-                            duration: this.settings.animation.slides.duration,
-                            easing: this.settings.animation.slides.easing,
-                            translateX: dir === 'next' ? -1*this.rect.width : this.rect.width,
-                            complete: () => {
-                                currentSlide.classList.remove('slide--current');
-                                resolve();
-                            }
-                        });
-            
-                        this.current = dir === 'next' ? 
-                            this.current < this.slidesTotal-1 ? this.current + 1 : 0 :
-                            this.current > 0 ? this.current - 1 : this.slidesTotal-1; 
-                        
-                        const newSlide = this.DOM.slides[this.current];
-                        newSlide.classList.add('slide--current');
-                        anime({
-                            targets: newSlide,
-                            duration: this.settings.animation.slides.duration,
-                            easing: this.settings.animation.slides.easing,
-                            translateX: [dir === 'next' ? this.rect.width : -1*this.rect.width,0]
-                        });
-            
+                return new Promise((resolve, reject) => {
+                    const currentSlide = this.DOM.slides[this.current];
+                    anime({
+                        targets: currentSlide,
+                        duration: this.settings.animation.slides.duration,
+                        easing: this.settings.animation.slides.easing,
+                        translateX: dir === 'next' ? -1*this.rect.width : this.rect.width,
+                        complete: () => {
+                            currentSlide.classList.remove('slide--current');
+                            resolve();
+                        }
+                    });
+        
+                    this.current = dir === 'next' ? 
+                        this.current < this.slidesTotal-1 ? this.current + 1 : 0 :
+                        this.current > 0 ? this.current - 1 : this.slidesTotal-1; 
+                    
+                    const newSlide = this.DOM.slides[this.current];
+                    newSlide.classList.add('slide--current');
+                    anime({
+                        targets: newSlide,
+                        duration: this.settings.animation.slides.duration,
+                        easing: this.settings.animation.slides.easing,
+                        translateX: [dir === 'next' ? this.rect.width : -1*this.rect.width,0]
+                    });
+                    /**
+                    const newSlideImg = newSlide.querySelector('.slide__img');
+                    anime.remove(newSlideImg);
+                    anime({
+                        targets: newSlideImg,
+                        duration: this.settings.animation.slides.duration*4,
+                        easing: this.settings.animation.slides.easing,
+                        translateX: [dir === 'next' ? 200 : -200, 0]
+                    });
+                    */
+                    // modifiying code here
+                    if(this.currentStyleLoaded === 1){
                         const newSlideImg = newSlide.querySelector('.slide__img');
                         anime.remove(newSlideImg);
                         anime({
@@ -170,7 +180,7 @@
                             easing: this.settings.animation.slides.easing,
                             translateX: [dir === 'next' ? 200 : -200, 0]
                         });
-            
+
                         anime({
                             targets: [newSlide.querySelector('.slide__title'), newSlide.querySelector('.slide__desc'), newSlide.querySelector('.slide__link')],
                             duration: this.settings.animation.slides.duration*2,
@@ -179,34 +189,8 @@
                             translateX: [dir === 'next' ? 300 : -300,0],
                             opacity: [0,1]
                         });
-                    });
-                } else {
-                    return new Promise((resolve, reject) => {
-                        const currentSlide = this.DOM.slides[this.current];
-                        anime({
-                            targets: currentSlide,
-                            duration: this.settings.animation.slides.duration,
-                            easing: this.settings.animation.slides.easing,
-                            translateX: dir === 'next' ? -1*this.rect.width : this.rect.width,
-                            complete: () => {
-                                currentSlide.classList.remove('slide--current');
-                                resolve();
-                            }
-                        });
-            
-                        this.current = dir === 'next' ? 
-                            this.current < this.slidesTotal-1 ? this.current + 1 : 0 :
-                            this.current > 0 ? this.current - 1 : this.slidesTotal-1; 
-                        
-                        const newSlide = this.DOM.slides[this.current];
-                        newSlide.classList.add('slide--current');
-                        anime({
-                            targets: newSlide,
-                            duration: this.settings.animation.slides.duration,
-                            easing: this.settings.animation.slides.easing,
-                            translateX: [dir === 'next' ? this.rect.width : -1*this.rect.width,0]
-                        });
-            
+
+                    } else {
                         const newSlideImg = newSlide.querySelector('.slide__img');
                         newSlideImg.style.transformOrigin = dir === 'next' ? '-10% 50%' : '110% 50%';
                         anime.remove(newSlideImg);
@@ -218,7 +202,7 @@
                             scale: [1.2,1],
                             rotate: [dir === 'next' ? 4 : -4,0]
                         });
-            
+
                         anime({
                             targets: [newSlide.querySelector('.slide__title'), newSlide.querySelector('.slide__desc'), newSlide.querySelector('.slide__link')],
                             duration: this.settings.animation.slides.duration,
@@ -228,8 +212,8 @@
                             rotate: [15,0],
                             opacity: [0,1]
                         });
-                    });
-                }
+                    }
+                });
             };
 
             const animateShapeOut = () => {
@@ -242,20 +226,44 @@
                     complete: () => this.isAnimating = false
                 });
             }
-            
+
             animateShapeIn.finished.then(animateSlides).then(animateShapeOut);
+        }
+        /**
+         * merge method handler
+         */
+        mergeHandler = () => {
+            console.log(this.currentStyleLoaded);
         }
     };
 
-    new Slideshow(document.querySelector('.slideshow'));
+    //var objSlideshow = new Slideshow(document.querySelector('.slideshow'));
+    var objSlideshow;
+    objSlideshow = new Slideshow(document.querySelector('.slideshow'));
     imagesLoaded('.slide__img', { background: true }, () => document.body.classList.remove('loading'));
-
+    //console.log(objSlideshow.mergeHandler());
+    // $( "li" ).each(function( index ) {
+    //     console.log( index + ": " + $( this ).text() );
+    // });
     document.querySelectorAll('.style-item').forEach((element) => {
         element.addEventListener("click", function(){
             //this.currentStyleLoaded = this.dataset.style;
             globalStyleValue = parseInt(this.dataset.style);
-            //document.querySelector('path').setAttribute('d', null);
-            new Slideshow(document.querySelector('.slideshow'));
+            console.log(this.currentStyleLoaded);
+            objSlideshow = new Slideshow(document.querySelector('.slideshow'));
+            //console.log(objSlideshow); 
+            //new Slideshow(document.querySelector('.slideshow'));
+            //imagesLoaded('.slide__img', { background: true }, () => document.body.classList.remove('loading'));
         });
     });
+    /*
+    document.querySelector('.custom-style-load-area ul li').forEach(function(){
+        //document.querySelector('.custom-style-load-area ul li a').addEventListener("click", function(){ 
+            //alert("Hello World! + ");
+            //console.log(this.dataset.style);
+            var x = this.nextSibling.innerHTML;
+            console.log(x); 
+        //});
+    })
+    */
 };
