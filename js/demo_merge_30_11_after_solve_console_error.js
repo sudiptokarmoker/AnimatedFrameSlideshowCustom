@@ -95,9 +95,6 @@
             }
         }
         initEvents() {
-            console.log("debugging from init events");
-            console.log(this.DOM.nextCtrl);
-
             this.DOM.nextCtrl.addEventListener('click', () => this.navigate('next'));
             this.DOM.prevCtrl.addEventListener('click', () => this.navigate('prev'));
             
@@ -268,7 +265,7 @@
             animateShapeIn.finished.then(animateSlides).then(animateShapeOut);
         }
         renderringNavIndicator(){
-            //console.log("slidesTotal : " + this.slidesTotal + " current : " + this.current);
+            console.log("slidesTotal : " + this.slidesTotal + " current : " + this.current);
         }
     };
 

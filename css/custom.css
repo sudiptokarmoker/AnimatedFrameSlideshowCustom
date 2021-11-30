@@ -2,3 +2,11 @@
 .custom-style-load-area ul{position: absolute; top: 50px; right: 20px;}
 .custom-style-load-area ul li{float: left; list-style-type: none;}
 .custom-style-load-area ul li a:active{font-weight: bold;}
+/*
+circle counter add into the page
+*/
+ul.slide-item-pointer{margin: 0px; padding: 0; display: flex; position:absolute; right: 0px; top: 50%; z-index: 9999;}
+ul.slide-item-pointer li{list-style: none; margin: 12px; padding: 8px; cursor: pointer;}
+ul.slide-item-pointer li span{width: 12px; height: 12px; border: 2px solid transparent; display: block;background-color: skyblue;}
+ul.slide-item-pointer li.active span{background-color: navy;}
+ul.slide-item-pointer li:hover span{background-color: navy;}

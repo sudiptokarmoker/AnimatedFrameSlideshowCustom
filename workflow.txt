@@ -1,0 +1,4 @@
+- add bullet on renderring the animation (working)
+- make selectable current item (active)
+- make unselecatable without current item (not active)
+- done

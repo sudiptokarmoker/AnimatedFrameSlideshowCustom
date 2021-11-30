@@ -95,9 +95,6 @@
             }
         }
         initEvents() {
-            console.log("debugging from init events");
-            console.log(this.DOM.nextCtrl);
-
             this.DOM.nextCtrl.addEventListener('click', () => this.navigate('next'));
             this.DOM.prevCtrl.addEventListener('click', () => this.navigate('prev'));
             
@@ -147,7 +144,6 @@
                             easing: this.settings.animation.slides.easing,
                             translateX: dir === 'next' ? -1*this.rect.width : this.rect.width,
                             complete: () => {
-                                this.renderringNavIndicator();
                                 currentSlide.classList.remove('slide--current');
                                 resolve();
                             }
@@ -163,10 +159,7 @@
                             targets: newSlide,
                             duration: this.settings.animation.slides.duration,
                             easing: this.settings.animation.slides.easing,
-                            translateX: [dir === 'next' ? this.rect.width : -1*this.rect.width,0],
-                            complete: () => {
-                                this.renderringNavIndicator();
-                            }
+                            translateX: [dir === 'next' ? this.rect.width : -1*this.rect.width,0]
                         });
             
                         const newSlideImg = newSlide.querySelector('.slide__img');
@@ -175,10 +168,7 @@
                             targets: newSlideImg,
                             duration: this.settings.animation.slides.duration*4,
                             easing: this.settings.animation.slides.easing,
-                            translateX: [dir === 'next' ? 200 : -200, 0],
-                            complete: () => {
-                                this.renderringNavIndicator();
-                            }
+                            translateX: [dir === 'next' ? 200 : -200, 0]
                         });
             
                         anime({
@@ -187,10 +177,7 @@
                             easing: this.settings.animation.slides.easing,
                             delay: (t,i) => i*100+100,
                             translateX: [dir === 'next' ? 300 : -300,0],
-                            opacity: [0,1],
-                            complete: () => {
-                                this.renderringNavIndicator();
-                            }
+                            opacity: [0,1]
                         });
                     });
                 } else {
@@ -202,7 +189,6 @@
                             easing: this.settings.animation.slides.easing,
                             translateX: dir === 'next' ? -1*this.rect.width : this.rect.width,
                             complete: () => {
-                                this.renderringNavIndicator();
                                 currentSlide.classList.remove('slide--current');
                                 resolve();
                             }
@@ -218,10 +204,7 @@
                             targets: newSlide,
                             duration: this.settings.animation.slides.duration,
                             easing: this.settings.animation.slides.easing,
-                            translateX: [dir === 'next' ? this.rect.width : -1*this.rect.width,0],
-                            complete: () => {
-                                this.renderringNavIndicator();
-                            }
+                            translateX: [dir === 'next' ? this.rect.width : -1*this.rect.width,0]
                         });
             
                         const newSlideImg = newSlide.querySelector('.slide__img');
@@ -233,10 +216,7 @@
                             easing: 'easeOutElastic',
                             elasticity: 350,
                             scale: [1.2,1],
-                            rotate: [dir === 'next' ? 4 : -4,0],
-                            complete: () => {
-                                this.renderringNavIndicator();
-                            }
+                            rotate: [dir === 'next' ? 4 : -4,0]
                         });
             
                         anime({
@@ -246,10 +226,7 @@
                             delay: (t,i,total) => dir === 'next' ? i*100+750 : (total-i-1)*100+750,
                             translateY: [dir === 'next' ? 300 : -300,0],
                             rotate: [15,0],
-                            opacity: [0,1],
-                            complete: () => {
-                                this.renderringNavIndicator();
-                            }
+                            opacity: [0,1]
                         });
                     });
                 }
@@ -265,29 +242,25 @@
                     complete: () => this.isAnimating = false
                 });
             }
+            
             animateShapeIn.finished.then(animateSlides).then(animateShapeOut);
         }
-        renderringNavIndicator(){
-            //console.log("slidesTotal : " + this.slidesTotal + " current : " + this.current);
+        resetAnimaton(){
+            alert("called");
         }
     };
 
-    globalAnimationObject = new Slideshow(document.querySelector('.slideshow'));
+    new Slideshow(document.querySelector('.slideshow'));
     imagesLoaded('.slide__img', { background: true }, () => document.body.classList.remove('loading'));
 
-    // document.querySelector('.style-item').addEventListener("click", function(){
-    //     globalAnimationObject.resetAnimaton();
-    // });
-
     document.querySelectorAll('.style-item').forEach((element) => {
+        /*
         element.addEventListener("click", function(){
             //this.currentStyleLoaded = this.dataset.style;
             globalStyleValue = parseInt(this.dataset.style);
             //document.querySelector('path').setAttribute('d', null);
-            //globalAnimationObject.resetAnimaton();
-            //globalAnimationObject.init();
-            globalAnimationObject.updateFrame();
-            //globalAnimationObject = new Slideshow(document.querySelector('.slideshow'));
+            new Slideshow(document.querySelector('.slideshow'));
         });
+        */
     });
 };
