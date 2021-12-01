@@ -9,7 +9,7 @@
  * http://www.codrops.com
  */
  {
-    var globalStyleValue = 1, globalAnimationObject;
+    var globalStyleValue = 1, globalAnimationObject, currentGlobalIndexCounter;
     // From https://davidwalsh.name/javascript-debounce-function.
 	function debounce(func, wait, immediate) {
 		var timeout;
@@ -52,6 +52,7 @@
             this.DOM.nextCtrl = this.DOM.nav.querySelector('.slidenav__item--next');
             this.DOM.prevCtrl = this.DOM.nav.querySelector('.slidenav__item--prev');
             this.current = 0;
+            currentGlobalIndexCounter = this.current;
             this.createFrame(); 
             this.initEvents();
         }
@@ -95,8 +96,8 @@
             }
         }
         initEvents() {
-            console.log("debugging from init events");
-            console.log(this.DOM.nextCtrl);
+            //console.log("debugging from init events");
+            //console.log(this.DOM.nextCtrl);
 
             this.DOM.nextCtrl.addEventListener('click', () => this.navigate('next'));
             this.DOM.prevCtrl.addEventListener('click', () => this.navigate('prev'));
@@ -115,8 +116,43 @@
                     this.navigate('next');
                 }
             });
+           // console.log(this.DOM.el.appendHTMl('<a href="https://google.com">HELO</a>'));
+           //this.DOM.el.innerHTML += '<ul class="slide-item-pointer"><li><span></span></li><li><span></span></li><li><span></span></li><li><span></span></li></ul>';
+           
+           //this.DOM.el.innerHTML += '';
+           //console.log("current item : " + this.current);
+           for(let i = 0; i < this.slidesTotal; i++){
+               if(i === 0){
+                document.querySelector('.slide-item-pointer').innerHTML += '<li class="active"><span></span></li>';
+               } else {
+                document.querySelector('.slide-item-pointer').innerHTML += '<li><span></span></li>';
+               }
+           }
+           if(this.slidesTotal > 0){
+            let items = document.querySelectorAll('.slide-item-pointer li');
+            let fullDOM = this.DOM;
+            items.forEach(function(item, key){
+                //item.addEventListener('click', () => console.log(currentIndexITem));
+                item.addEventListener('click', function(){
+                    console.log(fullDOM);
+                });
+                //item.addEventListener("click", function(){
+                    /**
+                     * find if this clicked on next or prev
+                     */
+                    //console.log('currentIndex : '  + this.getCurrentActivatedSlide());
+                    // if(key > currentIndex) console.log("next triggered");
+                    // else if(key < currentIndex) console.log("prev triggered");
+                    // else console.log("may be equal trigger");
+                //});
+            })
+           }
+            //let navDom = '<ul class="slide-item-pointer"><li><span></span></li><li><span></span></li><li><span></span></li><li><span></span></li></ul>';
+            //this.DOM.el.append('<ul class="slide-item-pointer"><li><span></span></li><li><span></span></li><li><span></span></li><li><span></span></li></ul>');
+            //navDom.insertAfter(this.DOM.el);
         }
         navigate(dir = 'next') {
+            console.log('DIR : ' + dir);
             if ( this.isAnimating ) return false;
             this.isAnimating = true;
             let animateShapeData;
@@ -141,6 +177,8 @@
                 if(globalStyleValue === 1){
                     return new Promise((resolve, reject) => {
                         const currentSlide = this.DOM.slides[this.current];
+                        console.log("currentSlide");
+                        console.log(currentSlide);
                         anime({
                             targets: currentSlide,
                             duration: this.settings.animation.slides.duration,
@@ -267,8 +305,50 @@
             }
             animateShapeIn.finished.then(animateSlides).then(animateShapeOut);
         }
+        testCurrentIndex = () => {
+            console.log(this.current);
+        }
         renderringNavIndicator(){
+            //console.log("triggering current");
+            //console.log(this.current);
+            document.querySelector('.slide-item-pointer')
+            let elems = document.querySelectorAll(".slide-item-pointer li");
+            // [].forEach.call((elems, key), function(el, key) {
+            //     //console.log(el);
+            //     el.classList.remove("active");
+            // });
+            elems.forEach(function(el, key) {
+                //console.log(el);
+                //console.log("key : " + key);
+                el.classList.remove("active");
+            });
+            let currentIndex = this.current;
+            elems.forEach(function(el, key) {
+                //console.log(currentIndex);
+                if(key === currentIndex){
+                   el.classList.add("active");
+                }
+                //console.log(el);
+                //console.log("key : " + key);
+                
+            });
+
+            /*
+            for(let i = 0; i < this.slidesTotal; i++){
+                if(i === 0){
+                 document.querySelector('.slide-item-pointer').innerHTML += '<li class="active"><span></span></li>';
+                } else {
+                 document.querySelector('.slide-item-pointer').innerHTML += '<li><span></span></li>';
+                }
+            }
+            */
             //console.log("slidesTotal : " + this.slidesTotal + " current : " + this.current);
+            // let navDom = '<ul class="slide-item-pointer"><li><span></span></li><li><span></span></li><li><span></span></li><li><span></span></li></ul>';
+            // this.DOM.append(navDom);
+        }
+        getCurrentActivatedSlide(){
+            //return this.current;
+            console.log(this.current);
         }
     };
 

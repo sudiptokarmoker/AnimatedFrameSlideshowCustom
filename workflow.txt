@@ -2,3 +2,5 @@
 - make selectable current item (active)
 - make unselecatable without current item (not active)
 - done
+===================================================
+- need to find out the if this next or prev trigger
